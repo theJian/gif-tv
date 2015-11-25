@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta name="description" content="Get a random gif from Giphy">
+	<meta name="author" content="thejian">
+	<title>random-gif</title>
+	<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+<body>
+<div id="viewer" class="container-fluid viewer"></div>
+<div id="bottom-panel" class="navbar navbar-fixed-bottom"><div class="container-fluid"><a href="" class="navbar-text navbar-right share-to-twitter">tweet</a><button id="btn-next" class="btn navbar-btn center-block">NEXT</button></div></div>
+<script src="http://cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.min.js"></script>
+<script type="text/javascript">
+	var globalData = {};
+
+	$(document).ready(function () {
+		var gifData;
+		$('#viewer').on('click', getNewGif);
+		$('#bottom-panel').on('click', '#btn-next', getNewGif);
+		$('.share-to-twitter').click(tweet);
+		getNewGif();
+	});
+
+	function tweet (event) {
+		event.preventDefault();
+		var winWidth = 520,
+			winHeight = 250,
+			winTop = (screen.height / 2) - (winHeight / 2),
+			winLeft = (screen.width / 2) - (winWidth / 2),
+			message = 'I found a funny Gif, check it out ' + globalData.data.data.image_original_url;
+		window.open('https://twitter.com/home?status=' + message, 'sharer', 'top=' + winTop + ',left=' + winLeft + ',width=' + winWidth + ',height=' + winHeight);
+	}
+
+	function getNewGif () {
+		var api_key = 'dc6zaTOxFJmzC';
+		$.getJSON('http://api.giphy.com/v1/gifs/random?api_key=' + api_key, function (data, status) {
+			var gifSrc = data.data.image_original_url;
+			$('#viewer').css('background-image', 'url(' + gifSrc + ')');
+			globalData.data = data;
+		});
+	}
+</script>
+</body>
+</html>
